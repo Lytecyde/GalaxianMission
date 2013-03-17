@@ -19,7 +19,7 @@ public class Explosion {
 			explosionParticles.add(new Pellet(x, y, 
 					(int)(Math.random()*6)-3, (int)(Math.random()*6)-3));			
 		}
-		Data.expls.add(this);
+		Data.exp_list.add(this);
 	}
 	//=============================================================== remove explosion
 	public void removeExplosion(){
@@ -27,7 +27,6 @@ public class Explosion {
 			explosionParticles.clear();	
 			Data.nofExplosions--;
 			//should not go below zero
-		}
-		
+		}		
 	}
 }//end of class

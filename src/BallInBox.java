@@ -57,15 +57,47 @@ public class BallInBox extends JPanel {
 	// ======================================================= paintComponent
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g); // Paint background, border
-		// removeCollisions
+		//------------ Collision detection
+		//Check the pellets
+		pelletCheck();
+		//Rocket check
+		rocketCheck();			
+		//------------Drawing
+		// Draw the balls.
+		for (Ball b : Data.m_balls) {
+			b.draw(g);
+		}
+		// Draw the gun
+		m_gun.draw(g);
+		// Draw all flying pellets
+		for (Pellet p : Data.p_list) {
+			p.draw(g);
+		}
+		//Draw all rockets
+		for (Rocket r:Data.r_list) {
+			r.draw(g);
+		}
+		//Draw the explosion particles
+		for(Explosion expl : Data.exp_list){
+			for(Pellet pExplosion:expl.explosionParticles){
+				 if((int)(Math.random()*10)>5){
+					 g.setColor(Color.red);
+				 }else{
+					 g.setColor(Color.yellow); 
+				 }
+				 pExplosion.draw(g);	
+			}
+		}
+	}
+	//==================================PelletCollisionDetect
+	public void pelletCheck(){
 		int ballX1;
 		int ballX2;
 		int ballY1;
 		int ballY2;
 		int indexOfBall = -1;
 		int indexOfPellet = -1;
-		//check the pellets
-		for (Pellet p : Data.parr) {
+		for (Pellet p : Data.p_list) {
 			//loop each ball checked against each pellet
 			for (Ball b : Data.m_balls) {
 				//calculate the edges of balls 				
@@ -78,7 +110,7 @@ public class BallInBox extends JPanel {
 					ballY1 = b.getY() - 11;// topline
 					if ((p.getY() <= ballY2) && (p.getY() > ballY1)) {
 						// as long as more exist else score winning points
-						indexOfPellet = Data.parr.indexOf(p);
+						indexOfPellet = Data.p_list.indexOf(p);
 						indexOfBall = Data.m_balls.indexOf(b);
 					}
 				}
@@ -99,20 +131,29 @@ public class BallInBox extends JPanel {
 				newWing();
 			}
 		}
-		//Rocket check
+	}
+	
+	//==================================RocketCollisionDetect
+	public void rocketCheck(){
+		int ballX1;
+		int ballX2;
+		int ballY1;
+		int ballY2;
+		int indexOfBall = -1;
+		int indexOfPellet = -1;
 		for (Rocket r : Data.r_list) {
 			//loop each ball checked against each pellet
 			for (Ball b : Data.m_balls) {
 				//calculate the edges of balls 				
-				ballX2 = b.getX() + 21;// rightline
+				ballX2 = b.getX() + 21;// rightline for collision bounds
 				System.out.println("x2:" + ballX2);
-				ballX1 = b.getX() -6;// leftline
+				ballX1 = b.getX() -6;// leftline for collision bounds
 				System.out.println("x1:" + ballX1);
 				if ((r.getX() <= ballX2) && (r.getX() > ballX1)) {
 					ballY2 = b.getY() + 11;// bottomline
 					ballY1 = b.getY() - 11;// topline
 					if ((r.getY() <= ballY2) && (r.getY() > ballY1)) {
-						// as long as more exist else score winning points
+						// as long as more exist						
 						indexOfPellet = Data.r_list.indexOf(r);
 						indexOfBall = Data.m_balls.indexOf(b);
 					}
@@ -132,31 +173,6 @@ public class BallInBox extends JPanel {
 			//produce a new wing of attackers
 			else if(Data.m_balls.isEmpty() && !(Data.attackersLevel < 1)){				
 				newWing();
-			}
-		}				
-		// Draw the balls.
-		for (Ball b : Data.m_balls) {
-			b.draw(g);
-		}
-		// Draw the gun
-		m_gun.draw(g);
-		// Draw all flying pellets
-		for (Pellet p : Data.parr) {
-			p.draw(g);
-		}
-		//Draw all rockets
-		for (Rocket r:Data.r_list) {
-			r.draw(g);
-		}
-		//draw the explosion particles
-		for(Explosion expl : Data.expls){
-			for(Pellet pExplosion:expl.explosionParticles){
-				 if((int)(Math.random()*10)>5){
-					 g.setColor(Color.red);
-				 }else{
-					 g.setColor(Color.yellow); 
-				 }
-				 pExplosion.draw(g);	
 			}
 		}
 	}
@@ -189,8 +205,8 @@ public class BallInBox extends JPanel {
 			}
 
 			// Move all Pellets fired by Gun
-			if (!Data.parr.isEmpty()) {
-				for (Pellet p : Data.parr) {
+			if (!Data.p_list.isEmpty()) {
+				for (Pellet p : Data.p_list) {
 					p.move();
 				}
 			}
@@ -201,7 +217,7 @@ public class BallInBox extends JPanel {
 				}
 			}
 			//move each explosion's each pellet
-			for(Explosion exp:Data.expls){
+			for(Explosion exp:Data.exp_list){
 				exp.explosionDuration--;
 				for (Pellet px : exp.explosionParticles) {
 					px.move();
@@ -213,7 +229,7 @@ public class BallInBox extends JPanel {
 				b.move();
 			}
 			//Fade the explosions
-			for(Explosion exp:Data.expls){
+			for(Explosion exp:Data.exp_list){
 				exp.removeExplosion();
 			}
 			// Update the score

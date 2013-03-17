@@ -2,12 +2,13 @@ import java.util.LinkedList;
 
 public class Data {
 	public static int x_adjust_gun = 0;
-	public static LinkedList<Pellet> parr = new LinkedList<Pellet>();
+	public static LinkedList<Pellet> p_list = new LinkedList<Pellet>();
 	public static LinkedList<Rocket> r_list = new LinkedList<Rocket>();
 	public static LinkedList<Ball> m_balls = new LinkedList<Ball>();
-	public static LinkedList<Explosion> expls = new LinkedList<Explosion>();
+	public static LinkedList<Explosion> exp_list = new LinkedList<Explosion>();
 	//nof attackers in each wing
-	public static int nofAttackers = 6;
+	public static int nofAttackers = 8;
+	//nof attackers per game
 	public static int attackersLevel = 24;
 	//pellet rise rate
 	public static int velocityY = -5;
