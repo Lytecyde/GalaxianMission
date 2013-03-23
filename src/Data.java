@@ -17,4 +17,5 @@ public class Data {
 	public static int nofExplosions;
 	public static int xplosionTime = 10;
 	public static LinkedList<Integer> explosionTimes = new LinkedList<Integer>();
+	public static int winDamageLevel = 85;
 }

@@ -61,7 +61,7 @@ public class BallInBox extends JPanel {
 		//Check the pellets
 		pelletCheck();
 		//Rocket check
-		rocketCheck();			
+		roundCheck(0);//0 is rockets			
 		//------------Drawing
 		// Draw the balls.
 		for (Ball b : Data.m_balls) {
@@ -115,7 +115,7 @@ public class BallInBox extends JPanel {
 					}
 				}
 			}// balls loop
-			// Removal of the shot ball
+			// Removal of the shot ball and pellet
 			if (!Data.m_balls.isEmpty() && (indexOfBall >= 0)) {
 				//create the explosion
 				Data.m_balls.get(indexOfBall).explode();
@@ -131,17 +131,37 @@ public class BallInBox extends JPanel {
 				newWing();
 			}
 		}
+		//remove the round
+		if(indexOfPellet >= 0){
+			Data.p_list.remove(indexOfPellet);
+		}	
 	}
 	
 	//==================================RocketCollisionDetect
-	public void rocketCheck(){
+	@SuppressWarnings("unchecked")
+	public void roundCheck(int roundType){
 		int ballX1;
 		int ballX2;
 		int ballY1;
 		int ballY2;
 		int indexOfBall = -1;
-		int indexOfPellet = -1;
-		for (Rocket r : Data.r_list) {
+		int indexOfRocket = -1;
+		LinkedList list = new LinkedList();
+		Object round = new Object();
+		
+		if(roundType == 0){
+			list = Data.r_list;
+		}
+		if(roundType == 1){
+			list = Data.p_list;
+		}
+		if(roundType == 2){
+			list = Data.p_list;
+		}
+		//-----------------------
+		Rocket r1; 
+		Pellet p1;
+		for (Object r: list.toArray()) {
 			//loop each ball checked against each pellet
 			for (Ball b : Data.m_balls) {
 				//calculate the edges of balls 				
@@ -149,17 +169,33 @@ public class BallInBox extends JPanel {
 				System.out.println("x2:" + ballX2);
 				ballX1 = b.getX() -6;// leftline for collision bounds
 				System.out.println("x1:" + ballX1);
-				if ((r.getX() <= ballX2) && (r.getX() > ballX1)) {
-					ballY2 = b.getY() + 11;// bottomline
-					ballY1 = b.getY() - 11;// topline
-					if ((r.getY() <= ballY2) && (r.getY() > ballY1)) {
-						// as long as more exist						
-						indexOfPellet = Data.r_list.indexOf(r);
-						indexOfBall = Data.m_balls.indexOf(b);
+				if(r instanceof Rocket){ 
+					r1 = (Rocket)r;
+					if ((r1.getX() <= ballX2) && (r1.getX() > ballX1)) {
+						ballY2 = b.getY() + 11;// bottomline
+						ballY1 = b.getY() - 11;// topline
+						if ((r1.getY() <= ballY2) && (r1.getY() > ballY1)) {
+							// as long as more exist						
+							indexOfRocket = list.indexOf(r);
+							indexOfBall = Data.m_balls.indexOf(b);
+						}
+					}
+				}
+				if(r instanceof Pellet){
+					p1 = (Pellet)r;
+					if ((p1.getX() <= ballX2) && (p1.getX() > ballX1)) {
+						ballY2 = b.getY() + 11;// bottomline
+						ballY1 = b.getY() - 11;// topline
+						if ((p1.getY() <= ballY2) && (p1.getY() > ballY1)) {
+							// as long as more exist						
+							indexOfRocket = list.indexOf(r);
+							indexOfBall = Data.m_balls.indexOf(b);
+						}
 					}
 				}
 			}// balls loop
-			// Removal of the shot ball
+			
+			// Removal of the shot ball and round
 			if (!Data.m_balls.isEmpty() && (indexOfBall >= 0)) {
 				//create the explosion
 				Data.m_balls.get(indexOfBall).explode();
@@ -174,6 +210,10 @@ public class BallInBox extends JPanel {
 			else if(Data.m_balls.isEmpty() && !(Data.attackersLevel < 1)){				
 				newWing();
 			}
+		}
+		//Remove round
+		if(indexOfRocket >= 0){
+			Data.r_list.remove(indexOfRocket);
 		}
 	}
 	
@@ -241,7 +281,7 @@ public class BallInBox extends JPanel {
 			//Victory conditions
 			//check victory condition and end game if won 
 			//check damage level
-			if(Data.attackersLevel < 1 && Score.countDamage < 50){
+			if(Data.attackersLevel < 1 && Score.countDamage < Data.winDamageLevel){
 				BBPanel.scoreLabelDamages.setText(" YOU ");
 				BBPanel.scoreLabelBalls.setText(" WIN! ");
 				BBPanel.scoreLabelTotalAttackersLeft.setText("");
