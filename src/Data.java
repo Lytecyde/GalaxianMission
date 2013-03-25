@@ -12,8 +12,12 @@ public class Data {
 	public static int attackersLevel = 24;
 	//pellet rise rate
 	public static int velocityY = -5;
-	public static int velocityXRocket = -10;
+	public static int velocityXRocket = -15;
 	//
+	//
+	public static int nofPellets = 48;
+	public static int ammo = nofPellets;
+	public static int nofRockets = 16;
 	public static int nofExplosions;
 	public static int xplosionTime = 10;
 	public static LinkedList<Integer> explosionTimes = new LinkedList<Integer>();

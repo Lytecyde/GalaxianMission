@@ -15,7 +15,8 @@ public class Explosion {
 	public void explode() {
 		// break into falling pellets
 		Data.nofExplosions++;
-		for(int i = 0;i < 24;i++){
+		int nofExplodingBits = 24;
+		for(int i = 0;i < nofExplodingBits;i++){
 			explosionParticles.add(new Pellet(x, y, 
 					(int)(Math.random()*6)-3, (int)(Math.random()*6)-3));			
 		}

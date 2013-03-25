@@ -40,8 +40,10 @@ public class Gun {
 		// pellet created
 		if (gunRoll == 1){
 			Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, -5));
+			Data.ammo -= 1;;
 		} else if (gunRoll == 2){
 			shootDouble();
+			Data.ammo -= 2;
 		}
 		if (gunRoll == 3){
 			shootRocket();
@@ -49,8 +51,7 @@ public class Gun {
 		
 	}
 	//==============================
-	public static void shootRocket() {
-		
+	public static void shootRocket() {		
 		// pellet created
 		Data.r_list.add(new Rocket(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, Data.velocityXRocket));					
 	}
