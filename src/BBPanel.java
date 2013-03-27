@@ -15,6 +15,7 @@ class BBPanel extends JPanel implements KeyListener {
 	static JLabel scoreLabelBalls = new JLabel("");
 	static JLabel scoreLabelTotalAttackersLeft = new JLabel("");	
 	static JLabel ammo = new JLabel("AMMO:");
+	static JLabel rockets = new JLabel("ROCKETS:");
 	// ========================================================== constructor
 	/** Creates a panel with the controls and bouncing ball display. */
 	BBPanel() {
@@ -28,13 +29,14 @@ class BBPanel extends JPanel implements KeyListener {
 		startButton.addKeyListener(this);
 		// ... Layout inner panel with two buttons horizontally and Data labels
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new FlowLayout());
+		buttonPanel.setLayout(new GridLayout(2,5));
 		buttonPanel.add(startButton);
 		buttonPanel.add(stopButton);
 		buttonPanel.add(scoreLabelDamages);
 		buttonPanel.add(scoreLabelBalls);
 		buttonPanel.add(scoreLabelTotalAttackersLeft);
-		buttonPanel.add(ammo);		
+		buttonPanel.add(ammo);
+		buttonPanel.add(rockets);
 		// ... Layout outer panel with button panel above bouncing ball
 		this.setLayout(new BorderLayout());
 		this.add(buttonPanel, BorderLayout.NORTH);
@@ -64,15 +66,15 @@ class BBPanel extends JPanel implements KeyListener {
 		if (c == KeyEvent.VK_RIGHT) {
 			Gun.aimRight();
 			// repaint();
+		}  else if (c == KeyEvent.VK_BACK_SPACE ){
+			//select guntype 
+			//cycle through a gunList
+			if(Gun.gunRoll==3)Gun.gunRoll = 1;
+			else Gun.gunRoll++;
 		} else if (c == KeyEvent.VK_LEFT) {
 			Gun.aimLeft();
 		} else if (c == KeyEvent.VK_SPACE) {
 			Gun.shoot();			
-		} else if (c == KeyEvent.VK_BACK_SPACE ){
-			//select guntype 
-			//TODO cycle through a gunList
-			if(Gun.gunRoll==3)Gun.gunRoll = 1;
-			else Gun.gunRoll++;
 		}
 			
 	}
@@ -83,5 +85,6 @@ class BBPanel extends JPanel implements KeyListener {
 
 	public void keyTyped(KeyEvent e) {
 		// Invoked when a key has been typed.
+		
 	}
 }// endclass BBPanel

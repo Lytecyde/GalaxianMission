@@ -113,65 +113,71 @@ public class BallInBox extends JPanel {
 		//-----------------------
 		Rocket r1; 
 		Pellet p1;
-		for (Object r: list) {
-			//loop each ball checked against each pellet
-			for (Ball b : Data.m_balls) {
-				//calculate the edges of balls 				
-				ballX2 = b.getX() + 21;// rightline for collision bounds
-				ballX1 = b.getX() -6;// leftline for collision bounds
-				if(r instanceof Rocket){ 
-					r1 = (Rocket)r;
-					if ((r1.getX() <= ballX2) && (r1.getX() > ballX1)) {
-						ballY2 = b.getY() + 11;// bottomline
-						ballY1 = b.getY() - 11;// topline
-						if ((r1.getY() <= ballY2) && (r1.getY() > ballY1)) {
-							// as long as more exist						
-							indexOfRound = list.indexOf(r);
-							indexOfBall = Data.m_balls.indexOf(b);
+		try{
+			for (Object r: list) {
+				//loop each ball checked against each pellet
+				for (Ball b : Data.m_balls) {
+					//calculate the edges of balls 				
+					ballX2 = b.getX() + 21;// rightline for collision bounds
+					ballX1 = b.getX() -6;// leftline for collision bounds
+					if(r instanceof Rocket){ 
+						r1 = (Rocket)r;
+						if ((r1.getX() <= ballX2) && (r1.getX() > ballX1)) {
+							ballY2 = b.getY() + 11;// bottomline
+							ballY1 = b.getY() - 11;// topline
+							if ((r1.getY() <= ballY2) && (r1.getY() > ballY1)) {
+								// as long as more exist						
+								indexOfRound = list.indexOf(r);
+								indexOfBall = Data.m_balls.indexOf(b);
+							}
 						}
 					}
-				}
-				if(r instanceof Pellet){
-					p1 = (Pellet)r;
-					if ((p1.getX() <= ballX2) && (p1.getX() > ballX1)) {
-						ballY2 = b.getY() + 11;// bottomline
-						ballY1 = b.getY() - 11;// topline
-						if ((p1.getY() <= ballY2) && (p1.getY() > ballY1)) {
-							// as long as more exist						
-							indexOfRound = list.indexOf(r);
-							indexOfBall = Data.m_balls.indexOf(b);
+					if(r instanceof Pellet){
+						p1 = (Pellet)r;
+						if ((p1.getX() <= ballX2) && (p1.getX() > ballX1)) {
+							ballY2 = b.getY() + 11;// bottomline
+							ballY1 = b.getY() - 11;// topline
+							if ((p1.getY() <= ballY2) && (p1.getY() > ballY1)) {
+								// as long as more exist						
+								indexOfRound = list.indexOf(r);
+								indexOfBall = Data.m_balls.indexOf(b);
+							}
 						}
 					}
+				}// balls loop
+				
+				// Removal of the shot ball and round
+				if (!Data.m_balls.isEmpty() && (indexOfBall >= 0)) {
+					//create the explosion
+					Data.m_balls.get(indexOfBall).explode();
+					//ball is eliminated
+					Data.m_balls.remove(indexOfBall);
+					Score.countAttackersLeft--; 
+					Data.attackersLevel--;
+					// Reinitialize index of ball
+					indexOfBall = -1;
 				}
-			}// balls loop
-			
-			// Removal of the shot ball and round
-			if (!Data.m_balls.isEmpty() && (indexOfBall >= 0)) {
-				//create the explosion
-				Data.m_balls.get(indexOfBall).explode();
-				//ball is eliminated
-				Data.m_balls.remove(indexOfBall);
-				Score.countAttackersLeft--; 
-				Data.attackersLevel--;
-				// Reinitialize index of ball
-				indexOfBall = -1;
-			}
-			//produce a new wing of attackers
-			else if(Data.m_balls.isEmpty() && !(Data.attackersLevel < 1)){				
-				newWing();
-			}
-			//Remove round
-			if(indexOfRound >= 0){
-				if(!list.isEmpty()){
-					list.remove(indexOfRound);
+				//produce a new wing of attackers
+				else if(Data.m_balls.isEmpty() && !(Data.attackersLevel < 1)){				
+					newWing();
 				}
-				indexOfRound = -1;
-			}
-		}//rounds loop
-		
+				//Remove round
+				
+					if(indexOfRound >= 0){
+						if(!list.isEmpty()){
+							list.remove(indexOfRound);
+						}
+						indexOfRound = -1;
+					}
+				
+			}//rounds loop
+		}catch(ConcurrentModificationException e){
+			System.out.println("Sama aegne modifikatsioon nimekirjas list.");				
+		}
 	}
 	
 	//==================================make the new balls
+	//TODO wing size is bigger armada x*y columns and rows
 	private void newWing() {
 		// create more dropping balls
 		// ... creating the Balls
