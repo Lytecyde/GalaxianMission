@@ -120,15 +120,17 @@ public class BallInBox extends JPanel {
 					//calculate the edges of balls 				
 					ballX2 = b.getX() + 21;// rightline for collision bounds
 					ballX1 = b.getX() -6;// leftline for collision bounds
-					if(r instanceof Rocket){ 
+					if(r instanceof Rocket ){ 
 						r1 = (Rocket)r;
 						if ((r1.getX() <= ballX2) && (r1.getX() > ballX1)) {
+							
 							ballY2 = b.getY() + 11;// bottomline
 							ballY1 = b.getY() - 11;// topline
 							if ((r1.getY() <= ballY2) && (r1.getY() > ballY1)) {
 								// as long as more exist						
 								indexOfRound = list.indexOf(r);
 								indexOfBall = Data.m_balls.indexOf(b);
+								Data.ammoRockets--;
 							}
 						}
 					}
@@ -163,12 +165,12 @@ public class BallInBox extends JPanel {
 				}
 				//Remove round
 				
-					if(indexOfRound >= 0){
-						if(!list.isEmpty()){
-							list.remove(indexOfRound);
-						}
-						indexOfRound = -1;
+				if(indexOfRound >= 0){
+					if(!list.isEmpty()){
+						list.remove(indexOfRound);
 					}
+					indexOfRound = -1;
+				}
 				
 			}//rounds loop
 		}catch(ConcurrentModificationException e){
@@ -238,7 +240,8 @@ public class BallInBox extends JPanel {
 			BBPanel.scoreLabelBalls.setText("Attackers: "
 					+ Integer.toString(Score.countAttackersLeft));
 			BBPanel.scoreLabelTotalAttackersLeft.setText("Total:"+Integer.toString(Data.attackersLevel) );
-			BBPanel.ammo.setText("AMMO:"+Integer.toString(Data.ammo) );
+			BBPanel.ammo.setText("AMMO: "+Integer.toString(Data.ammo) );
+			BBPanel.rockets.setText("ROCKETS: " + Data.ammoRockets);
 			//Victory conditions
 			//check victory condition and end game if won 
 			//check damage level

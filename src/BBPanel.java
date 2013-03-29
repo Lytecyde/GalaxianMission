@@ -1,4 +1,4 @@
-// File:  animation/bb/BBPanel.java
+// File:  
 // Description: Panel to layout buttons and graphics area.
 // Authors: Fred Swartz, Mik Seljamaa
 // Date:   March 2013
@@ -75,6 +75,11 @@ class BBPanel extends JPanel implements KeyListener {
 			Gun.aimLeft();
 		} else if (c == KeyEvent.VK_SPACE) {
 			Gun.shoot();			
+		} else if (c == KeyEvent.VK_R && 
+				(Gun.x_gunpos >190) &&(Gun.x_gunpos < 210)
+				) {
+			Gun.reload();
+			//TODO wait in another thread until resuming shooting/moving 
 		}
 			
 	}

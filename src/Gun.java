@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Gun {
+	private static final int VELOCITY_Y = -5;
+
 	// ... gun size
 	private final int DIAMETER = 21;
 
@@ -39,7 +41,7 @@ public class Gun {
 	public static void shoot() {
 		// pellet created
 		if (gunRoll == 1){
-			Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, -5));
+			Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, VELOCITY_Y));
 			Data.ammo -= 1;;
 		} else if (gunRoll == 2){
 			shootDouble();
@@ -53,11 +55,15 @@ public class Gun {
 	//==============================
 	public static void shootRocket() {		
 		// pellet created
-		Data.r_list.add(new Rocket(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, Data.velocityXRocket));					
+		if(Data.ammoRockets > 0){
+			Data.r_list.add(new Rocket(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, Data.velocityXRocket));
+		}else {
+			System.out.println("");
+		}
 	}
 	public static void shootDouble(){
-		Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, -5));
-		Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun + 21, y_gunpos, 0, -5));
+		Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, VELOCITY_Y));
+		Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun + 21, y_gunpos, 0, VELOCITY_Y));
 	}
 	
 	public static void aimLeft() {
@@ -67,6 +73,10 @@ public class Gun {
 
 	public static void aimRight() {
 		Data.x_adjust_gun += 2;
-
+	}
+	public static void reload(){
+		//set ammo and rockets
+		Data.ammo = Data.nofPellets;
+		Data.ammoRockets = Data.nofRockets;
 	}
 }// endclass

@@ -63,9 +63,6 @@ public class Pellet {
 	// ============================================================== explode
 	public void explode() {
 
-		// TODO draw pellet explosion
-		// removePellet();
-
 	}
 
 	// ============================================================== draw

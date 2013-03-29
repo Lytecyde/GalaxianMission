@@ -18,6 +18,7 @@ public class Data {
 	public static int nofPellets = 48;
 	public static int ammo = nofPellets;
 	public static int nofRockets = 16;
+	public static int ammoRockets = nofRockets;
 	public static int nofExplosions;
 	public static int xplosionTime = 10;
 	public static LinkedList<Integer> explosionTimes = new LinkedList<Integer>();
