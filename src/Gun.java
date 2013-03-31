@@ -11,7 +11,7 @@ public class Gun {
 	private final int DIAMETER = 21;
 
 	public static int x_gunpos = 200;
-	public static int y_gunpos = 200;
+	public static int y_gunpos = 500;
 	public static int gunRoll = 1;
 	// ========================constructor
 	public Gun() {
@@ -49,9 +49,18 @@ public class Gun {
 		}
 		if (gunRoll == 3){
 			shootRocket();
+			Data.ammoRockets--;
 		}
-		
+		if(gunRoll == 4){
+			shootTakeOver();
+			Data.ammoRockets--;
+		}
 	}
+	public static void shootTakeOver() {
+		// TODO
+		Data.tar_list.add(new TakeOverRocket(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, Data.velocityXRocket));
+	}
+
 	//==============================
 	public static void shootRocket() {		
 		// pellet created

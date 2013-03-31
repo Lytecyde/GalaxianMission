@@ -1,5 +1,6 @@
-// File:   animation/bb/BouncingBall.java
-// Description: This Graphics panel simulates a ball bouncing in a box.
+// 
+// Description: This Graphics panel simulates a ball bouncing in a box 
+//			and the movable gunship.
 //         Animation is done by changing instance variables
 //         in the timer's actionListener, then calling repaint().
 //         * Flicker can be reduced by drawing into a BufferedImage, 
@@ -29,12 +30,9 @@ public class BallInBox extends JPanel {
 	
 	// TODO lock panel size
 	public BallInBox() {
-		// ... creating the Balls
-		for (int i = 0; i < Data.nofAttackers; i++)
-			Data.m_balls.add(new Ball((40 + (40 * i)), 0, 0, -5));
-
-		setSize(new Dimension(400, 300));
-
+		// ... creating the Ball
+		new NewArmada();
+		setSize(new Dimension(400, 600));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		m_timer = new Timer(m_interval, new TimerAction());
 	}
@@ -55,17 +53,26 @@ public class BallInBox extends JPanel {
 	}
 
 	// ======================================================= paintComponent
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g); // Paint background, border
 		//------------ Collision detection
 		//Check the pellets
-		roundCheck(1);
+		roundCheck(1);//pellets single and doubleshots
 		//Rocket check
-		roundCheck(0);//0 is rockets			
+		roundCheck(0);//0 is rockets
+		//check the takeover rockets
+		roundCheck(3);
 		//------------Drawing
+		
 		// Draw the balls.
 		for (Ball b : Data.m_balls) {
-			b.draw(g);
+			if (b.painted){
+			b.draw(g,Color.BLUE);
+			}
+			else {
+				b.draw(g, Color.BLACK);
+			}
 		}
 		// Draw the gun
 		m_gun.draw(g);
@@ -73,10 +80,14 @@ public class BallInBox extends JPanel {
 		for (Pellet p : Data.p_list) {
 			p.draw(g);
 		}
-		//Draw all rockets
+		//Draw rockets
 		for (Rocket r:Data.r_list) {
 			r.draw(g);
 		}
+		for (TakeOverRocket tar:Data.tar_list) {
+			tar.draw(g);
+		}
+		
 		//Draw the explosion particles
 		for(Explosion expl : Data.exp_list){
 			for(Pellet pExplosion:expl.explosionParticles){
@@ -89,7 +100,7 @@ public class BallInBox extends JPanel {
 			}
 		}
 	}
-		//==================================RocketCollisionDetect
+	//==================================RocketCollisionDetect
 	@SuppressWarnings("unchecked")
 	public void roundCheck(int roundType){
 		int ballX1;
@@ -110,6 +121,9 @@ public class BallInBox extends JPanel {
 		if(roundType == 2){
 			list = Data.p_list;
 		}
+		if(roundType == 3){
+			list = Data.tar_list;
+		}
 		//-----------------------
 		Rocket r1; 
 		Pellet p1;
@@ -123,14 +137,28 @@ public class BallInBox extends JPanel {
 					if(r instanceof Rocket ){ 
 						r1 = (Rocket)r;
 						if ((r1.getX() <= ballX2) && (r1.getX() > ballX1)) {
-							
 							ballY2 = b.getY() + 11;// bottomline
 							ballY1 = b.getY() - 11;// topline
 							if ((r1.getY() <= ballY2) && (r1.getY() > ballY1)) {
 								// as long as more exist						
 								indexOfRound = list.indexOf(r);
 								indexOfBall = Data.m_balls.indexOf(b);
-								Data.ammoRockets--;
+							}
+						}
+					}
+					if(r instanceof TakeOverRocket ){ 
+						r1 = (TakeOverRocket)r;
+						if ((r1.getX() <= ballX2) && (r1.getX() > ballX1)) {
+							ballY2 = b.getY() + 11;// bottomline
+							ballY1 = b.getY() - 11;// topline
+							if ((r1.getY() <= ballY2) && (r1.getY() > ballY1)) {
+								// as long as more exist						
+								indexOfRound = list.indexOf(r);
+								//do not remove the ball
+								indexOfBall = Data.m_balls.indexOf(b);
+								//paint ball blue to show takeover
+								//b.draw(getGraphics(), Color.BLUE);
+								b.painted = true;
 							}
 						}
 					}
@@ -146,35 +174,36 @@ public class BallInBox extends JPanel {
 							}
 						}
 					}
-				}// balls loop
-				
+				}// balls loop				
 				// Removal of the shot ball and round
-				if (!Data.m_balls.isEmpty() && (indexOfBall >= 0)) {
+				//if it was painted do not remove				
+				if(!Data.m_balls.isEmpty() && (indexOfBall >= 0)) {
 					//create the explosion
-					Data.m_balls.get(indexOfBall).explode();
-					//ball is eliminated
-					Data.m_balls.remove(indexOfBall);
+					if(Data.m_balls.get(indexOfBall).painted==false){
+						Data.m_balls.get(indexOfBall).explode();
+						//ball is eliminated
+						Data.m_balls.remove(indexOfBall);
+					}
 					Score.countAttackersLeft--; 
 					Data.attackersLevel--;
 					// Reinitialize index of ball
 					indexOfBall = -1;
 				}
+				
 				//produce a new wing of attackers
 				else if(Data.m_balls.isEmpty() && !(Data.attackersLevel < 1)){				
-					newWing();
+					//new NewArmada();
 				}
-				//Remove round
-				
+				//Remove round				
 				if(indexOfRound >= 0){
 					if(!list.isEmpty()){
 						list.remove(indexOfRound);
 					}
 					indexOfRound = -1;
-				}
-				
+				}				
 			}//rounds loop
 		}catch(ConcurrentModificationException e){
-			System.out.println("Sama aegne modifikatsioon nimekirjas list.");				
+			System.out.println("Exception: Explosion causes concurrent modification of the list iterated.");				
 		}
 	}
 	
@@ -188,7 +217,27 @@ public class BallInBox extends JPanel {
 			Data.m_balls.add(new Ball((40 + (40 * i)), 0, 0, Data.velocityY));
 		}
 	}
-
+	class NewArmada implements Runnable {
+		Thread t;
+		NewArmada(){
+			t = new Thread(this,"");
+			t.start();			
+		}
+		public void run(){
+			try{
+				for (int i = 0; i < Data.nofWingsInArmada; i++){
+					//wait then release a new wing or in paintComponents
+					//wait
+					Thread.sleep(1000);					
+					//release new wing
+					newWing();
+				}
+				
+			}catch(InterruptedException e){
+				
+			}
+		}
+	}
 	// ////////////////////////////////// inner listener class ActionListener
 	class TimerAction implements ActionListener {
 		// ================================================== actionPerformed
@@ -199,23 +248,27 @@ public class BallInBox extends JPanel {
 		 * @param e
 		 *            This ActionEvent parameter is unused.
 		 */
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			//set balls fall area
 			for (Ball b : Data.m_balls) {
 				if (!Data.m_balls.isEmpty())
 					b.setBounds(getWidth(), getHeight());
 			}
-
 			// Move all Pellets fired by Gun
 			if (!Data.p_list.isEmpty()) {
 				for (Pellet p : Data.p_list) {
 					p.move();
 				}
-			}
-			
+			}			
 			if (!Data.r_list.isEmpty()) {
 				for (Rocket r : Data.r_list) {
 					r.move();
+				}
+			}
+			if (!Data.tar_list.isEmpty()) {
+				for (Rocket tar : Data.tar_list) {
+					tar.move();
 				}
 			}
 			//move each explosion's each pellet
@@ -224,8 +277,7 @@ public class BallInBox extends JPanel {
 				for (Pellet px : exp.explosionParticles) {
 					px.move();
 				}
-			}
-			
+			}			
 			// Move the balls.
 			for (Ball b : Data.m_balls) {
 				b.move();

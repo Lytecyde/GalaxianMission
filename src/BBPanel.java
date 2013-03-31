@@ -69,7 +69,7 @@ class BBPanel extends JPanel implements KeyListener {
 		}  else if (c == KeyEvent.VK_BACK_SPACE ){
 			//select guntype 
 			//cycle through a gunList
-			if(Gun.gunRoll==3)Gun.gunRoll = 1;
+			if(Gun.gunRoll == 4)Gun.gunRoll = 1;
 			else Gun.gunRoll++;
 		} else if (c == KeyEvent.VK_LEFT) {
 			Gun.aimLeft();

@@ -20,7 +20,7 @@ public class Ball {
 	private int m_rightBound; // Maximum permissible x, y values.
 	private int m_bottomBound;
 	
-	
+	public  boolean painted = false;
 	// ======================================================== constructor
 	public Ball(int x, int y, int velocityX, int velocityY) {
 		m_x = x;
@@ -34,10 +34,16 @@ public class Ball {
 		m_rightBound = width - DIAMETER;
 		m_bottomBound = height - DIAMETER;
 	}
-
+	public void shift(){
+		if(Math.random() > 0.5){
+			
+		}else{
+			
+		}
+	}
 	// ============================================================== move
 	public void move() {
-		// ... Move the ball at the give velocity.
+		// ... Move the ball at the given velocity.
 		m_x += m_velocityX;
 		m_y += m_velocityY;
 
@@ -72,7 +78,10 @@ public class Ball {
 	public void draw(Graphics g) {
 		g.fillOval(m_x, m_y, DIAMETER, DIAMETER);
 	}
-
+	public void draw(Graphics g, Color v){
+		g.setColor(v);
+		g.fillOval(m_x, m_y, DIAMETER, DIAMETER);
+	}
 	// ============================================= getDiameter, getX, getY
 	public int getDiameter() {
 		return DIAMETER;
