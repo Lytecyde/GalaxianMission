@@ -23,9 +23,9 @@ public class Data {
 	public static int nofLevels = 12;
 	
 	//ammo and explosions
-	public static int nofPellets = 48;
+	public final static int nofPellets = 48;
 	public static int ammo = nofPellets;
-	public static int nofRockets = 16;
+	public final static int nofRockets = 16;
 	public static int ammoRockets = nofRockets;
 	public static int nofExplosions;
 	public static int xplosionTime = 10;

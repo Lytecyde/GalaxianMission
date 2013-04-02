@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.*;
@@ -21,13 +22,14 @@ public class Gun {
 	// ================================ draw the gun
 	// draw Turret
 	public void drawTurret(Graphics g) {
+		g.setColor(Color.BLACK);
 		g.fillOval(x_gunpos, y_gunpos, DIAMETER, DIAMETER);
 
 	}
 
 	// draw Gun left, right
 	public void drawGun(Graphics g) {
-
+		g.setColor(Color.BLACK);
 		g.fillOval(x_gunpos + Data.x_adjust_gun, y_gunpos - DIAMETER, DIAMETER,
 				DIAMETER);
 	}
@@ -71,13 +73,17 @@ public class Gun {
 		}
 	}
 	public static void shootDouble(){
-		Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, VELOCITY_Y));
-		Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun + 21, y_gunpos, 0, VELOCITY_Y));
+		if(Data.ammo > 0){
+			Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, VELOCITY_Y));
+			Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun + 21, y_gunpos, 0, VELOCITY_Y));
+		}
+		else {
+			System.out.println("Out of ammo: Reload!");
+		}
 	}
-	
+	//to change gun position
 	public static void aimLeft() {
 		Data.x_adjust_gun += -2;
-
 	}
 
 	public static void aimRight() {

@@ -20,6 +20,8 @@ public class Ball {
 	private int m_rightBound; // Maximum permissible x, y values.
 	private int m_bottomBound;
 	
+	private int m_shiftTime = 10;
+	
 	public  boolean painted = false;
 	// ======================================================== constructor
 	public Ball(int x, int y, int velocityX, int velocityY) {
@@ -35,10 +37,18 @@ public class Ball {
 		m_bottomBound = height - DIAMETER;
 	}
 	public void shift(){
-		if(Math.random() > 0.5){
-			
-		}else{
-			
+		if(m_shiftTime > 1){
+			if(Math.random() > 0.5){
+				m_velocityX = 3;
+			}else{
+				m_velocityX = -3;
+			}
+			m_x += m_velocityX;
+			m_shiftTime--;
+		}	
+		else{
+			m_velocityX = -m_velocityX;
+			m_shiftTime = 10;
 		}
 	}
 	// ============================================================== move
@@ -46,25 +56,26 @@ public class Ball {
 		// ... Move the ball at the given velocity.
 		m_x += m_velocityX;
 		m_y += m_velocityY;
-
 		// ... Bounce the ball off the walls if necessary.
 		if (m_x < 0) { // If at or beyond left side
 			m_x = 0; // Place against edge and
 			m_velocityX = -m_velocityX; // reverse direction.
-
 		} else if (m_x > m_rightBound) { // If at or beyond right side
 			m_x = m_rightBound; // Place against right edge.
 			m_velocityX = -m_velocityX; // Reverse direction.
 		}
-
-		if (m_y < 0) { // if we're at top
+		// if we're at top: bounce and return to damage
+		if (m_y < 0) { 
 			m_y = 0;
 			m_velocityY = -m_velocityY;
-
-		} else if (m_y > m_bottomBound) { // if we're at bottom
+			//damageMock();
+		} 
+		// if we're at bottom: bounce
+		else if (m_y > m_bottomBound) { 
 			m_y = m_bottomBound;
 			m_velocityY = -m_velocityY;
-			Score.countDamage += 1;
+			if(!this.painted)Score.countDamage += 1;
+			
 		}
 	}
 

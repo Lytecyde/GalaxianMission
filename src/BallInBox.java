@@ -24,7 +24,8 @@ public class BallInBox extends JPanel {
 	// ... Instance variables for the animation
 	private int m_interval = 35; // Milliseconds between updates.
 	private Timer m_timer; // Timer fires to animate one step.
-
+	private int nofAttackers = Data.attackersLevel;
+	private int nofUsurper = 0;
 	// ========================================================== constructor
 	/** Create the attacking balls. Set panel size and creates timer. */
 	
@@ -217,6 +218,7 @@ public class BallInBox extends JPanel {
 			Data.m_balls.add(new Ball((40 + (40 * i)), 0, 0, Data.velocityY));
 		}
 	}
+	//////////////////////////////////////////////inner class that creates the attackers
 	class NewArmada implements Runnable {
 		Thread t;
 		NewArmada(){
@@ -226,7 +228,6 @@ public class BallInBox extends JPanel {
 		public void run(){
 			try{
 				for (int i = 0; i < Data.nofWingsInArmada; i++){
-					//wait then release a new wing or in paintComponents
 					//wait
 					Thread.sleep(1000);					
 					//release new wing
@@ -281,6 +282,8 @@ public class BallInBox extends JPanel {
 			// Move the balls.
 			for (Ball b : Data.m_balls) {
 				b.move();
+				//shift move
+				b.shift();
 			}
 			//Fade the explosions
 			for(Explosion exp:Data.exp_list){
@@ -298,6 +301,16 @@ public class BallInBox extends JPanel {
 			//check victory condition and end game if won 
 			//check damage level
 			if(Data.attackersLevel < 1 && Score.countDamage < Data.winDamageLevel){
+				BBPanel.scoreLabelDamages.setText(" YOU ");
+				BBPanel.scoreLabelBalls.setText(" WIN! ");
+				BBPanel.scoreLabelTotalAttackersLeft.setText("");
+			}
+			//check number of balls - balls.painted == true
+			for(Ball b : Data.m_balls){
+				//
+				if(b.painted)nofUsurper++;
+			}
+			if(nofAttackers - nofUsurper < 1){
 				BBPanel.scoreLabelDamages.setText(" YOU ");
 				BBPanel.scoreLabelBalls.setText(" WIN! ");
 				BBPanel.scoreLabelTotalAttackersLeft.setText("");
