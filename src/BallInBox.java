@@ -81,14 +81,13 @@ public class BallInBox extends JPanel {
 		for (Pellet p : Data.p_list) {
 			p.draw(g);
 		}
-		//Draw rockets
+		//Draw the rockets
 		for (Rocket r:Data.r_list) {
 			r.draw(g);
 		}
 		for (TakeOverRocket tar:Data.tar_list) {
 			tar.draw(g);
-		}
-		
+		}		
 		//Draw the explosion particles
 		for(Explosion expl : Data.exp_list){
 			for(Pellet pExplosion:expl.explosionParticles){
@@ -112,7 +111,6 @@ public class BallInBox extends JPanel {
 		int indexOfRound = -1;
 		LinkedList list = new LinkedList();
 		Object round = new Object();
-		
 		if(roundType == 0){
 			list = Data.r_list;
 		}
@@ -185,8 +183,8 @@ public class BallInBox extends JPanel {
 						//ball is eliminated
 						Data.m_balls.remove(indexOfBall);
 					}
-					Score.countAttackersLeft--; 
-					Data.attackersLevel--;
+					if(Score.countAttackersLeft > 0)Score.countAttackersLeft--; 
+					if(Data.attackersLevel > 0)Data.attackersLevel--;
 					// Reinitialize index of ball
 					indexOfBall = -1;
 				}
@@ -239,7 +237,7 @@ public class BallInBox extends JPanel {
 			}
 		}
 	}
-	// ////////////////////////////////// inner listener class ActionListener
+	//////////////////////////////////// inner listener class ActionListener
 	class TimerAction implements ActionListener {
 		// ================================================== actionPerformed
 		/**
@@ -301,9 +299,7 @@ public class BallInBox extends JPanel {
 			//check victory condition and end game if won 
 			//check damage level
 			if(Data.attackersLevel < 1 && Score.countDamage < Data.winDamageLevel){
-				BBPanel.scoreLabelDamages.setText(" YOU ");
-				BBPanel.scoreLabelBalls.setText(" WIN! ");
-				BBPanel.scoreLabelTotalAttackersLeft.setText("");
+				winnerMessage();
 			}
 			//check number of balls - balls.painted == true
 			for(Ball b : Data.m_balls){
@@ -311,11 +307,14 @@ public class BallInBox extends JPanel {
 				if(b.painted)nofUsurper++;
 			}
 			if(nofAttackers - nofUsurper < 1){
-				BBPanel.scoreLabelDamages.setText(" YOU ");
-				BBPanel.scoreLabelBalls.setText(" WIN! ");
-				BBPanel.scoreLabelTotalAttackersLeft.setText("");
+				winnerMessage();
 			}
 			repaint(); // Repaint indirectly calls paintComponent.
+		}//actionperformer function
+		public void winnerMessage(){
+			BBPanel.scoreLabelDamages.setText(" YOU ");
+			BBPanel.scoreLabelBalls.setText(" WIN! ");
+			BBPanel.scoreLabelTotalAttackersLeft.setText("");
 		}
-	}
+	}//end action listener class
 }// endclass

@@ -35,34 +35,42 @@ public class Gun {
 	}
 
 	public void draw(Graphics g) {
-
 		drawTurret(g);
 		drawGun(g);
 	}
 
 	public static void shoot() {
 		// pellet created
-		if (gunRoll == 1){
-			Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, VELOCITY_Y));
-			Data.ammo -= 1;;
+		if (gunRoll == 1){			
+			if(Data.ammo > 0){
+				Data.p_list.add(new Pellet(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, VELOCITY_Y));
+				Data.ammo -= 1;
+			}
 		} else if (gunRoll == 2){
-			shootDouble();
-			Data.ammo -= 2;
+			
+			if(Data.ammo > 0){
+				shootDouble();
+				Data.ammo -= 2;
+			}
 		}
-		if (gunRoll == 3){
-			shootRocket();
-			Data.ammoRockets--;
+		if (gunRoll == 3){			
+			if(Data.ammoRockets > 0){
+				shootRocket();
+				Data.ammoRockets--;
+			}			
 		}
-		if(gunRoll == 4){
-			shootTakeOver();
-			Data.ammoRockets--;
+		if(gunRoll == 4){			
+			if(Data.ammoRockets > 0){
+				shootTakeOver();
+				Data.ammoRockets--;
+			}
 		}
 	}
 	public static void shootTakeOver() {
-		// TODO
-		Data.tar_list.add(new TakeOverRocket(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, Data.velocityXRocket));
+		if(Data.ammoRockets > 0){
+			Data.tar_list.add(new TakeOverRocket(x_gunpos + Data.x_adjust_gun, y_gunpos, 0, Data.velocityXRocket));
+		}
 	}
-
 	//==============================
 	public static void shootRocket() {		
 		// pellet created
